@@ -88,7 +88,7 @@ export function getCsprojTemplate(config: ExtensionConfig, projectName: string =
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <CreateVsixContainer>true</CreateVsixContainer>
-    <DeployExtension>true</DeployExtension>
+    <DeployExtension>false</DeployExtension>
     <DeployVSTemplates>false</DeployVSTemplates>
     <CopyVsixManifestToOutput>true</CopyVsixManifestToOutput>
     <TargetVsixContainerName>${projectName}.vsix</TargetVsixContainerName>
