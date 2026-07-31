@@ -6,7 +6,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace MyAIStudioExtension
 {
-    internal final class ChatWindowCommand
+    internal sealed class ChatWindowCommand
     {
         public const int CommandId = 0x0100;
         public static readonly Guid CommandSet = new Guid("c3f8b921-8888-9999-aaaa-bbbbccccdddd");
