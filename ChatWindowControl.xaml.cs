@@ -10,10 +10,10 @@ namespace MyAIStudioExtension
         public ChatWindowControl()
         {
             InitializeComponent();
-            InitializeWebViewAsync();
+            _ = InitializeWebViewAsync();
         }
 
-        private async void InitializeWebViewAsync()
+        private async System.Threading.Tasks.Task InitializeWebViewAsync()
         {
             try
             {

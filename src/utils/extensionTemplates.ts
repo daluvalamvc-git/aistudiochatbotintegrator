@@ -43,6 +43,9 @@ export function getManifestTemplate(config: ExtensionConfig, projectName: string
       <ProductArchitecture>amd64</ProductArchitecture>
     </InstallationTarget>
   </Installation>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="${versionRange}" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.7.2,)" />
   </Dependencies>
