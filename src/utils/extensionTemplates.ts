@@ -62,6 +62,7 @@ export function getCsprojTemplate(config: ExtensionConfig, projectName: string =
   <PropertyGroup>
     <MinimumVisualStudioVersion>${minVsVersion}</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\\Microsoft\\VisualStudio\\v$(VisualStudioVersion)</VSToolsPath>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\\$(MSBuildToolsVersion)\\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -75,6 +76,7 @@ export function getCsprojTemplate(config: ExtensionConfig, projectName: string =
     <RootNamespace>${projectName}</RootNamespace>
     <AssemblyName>${projectName}</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <RuntimeIdentifiers>win;win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
