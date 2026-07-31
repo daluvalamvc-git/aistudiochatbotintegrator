@@ -691,6 +691,10 @@ export function getWebviewHtmlTemplate(config: ExtensionConfig): string {
       <span class="text-sm font-bold text-slate-900 tracking-tight">${escapeXml(config.extensionName)}</span>
     </div>
     <div class="flex items-center space-x-2">
+      <button id="btn-account-info" title="Google Account & Credits Info" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-md border border-slate-300 flex items-center gap-1.5 transition font-medium cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-indigo-600" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+        <span>Google Account & Credits</span>
+      </button>
       <label for="model-select" class="text-xs text-slate-500 font-medium">Model:</label>
       <select id="model-select" class="bg-slate-50 text-indigo-700 font-mono text-xs px-2.5 py-1 rounded-md border border-slate-300 focus:outline-none focus:border-indigo-600 cursor-pointer font-medium shadow-2xs">
         <option value="gemini-2.5-flash">gemini-2.5-flash</option>
@@ -701,15 +705,59 @@ export function getWebviewHtmlTemplate(config: ExtensionConfig): string {
     </div>
   </div>
 
+  <!-- Google Account & Credits Info Modal / Banner -->
+  <div id="account-info-modal" class="hidden bg-indigo-900 text-white p-4 border-b border-indigo-700 text-xs space-y-3 relative shadow-md">
+    <div class="flex justify-between items-start">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center text-slate-900 font-bold text-xs">G</div>
+        <h4 class="font-bold text-sm text-white">Google Account Sign In & API Credits</h4>
+      </div>
+      <button id="btn-close-account-modal" class="text-indigo-200 hover:text-white font-bold text-sm">✕</button>
+    </div>
+    
+    <div class="space-y-2 text-indigo-100 leading-relaxed">
+      <p>Your AI Chatbot connects directly to Google AI Studio using your Google Account credentials and API Key.</p>
+      
+      <div class="bg-indigo-950/80 p-3 rounded-lg border border-indigo-800/80 space-y-2">
+        <div class="font-semibold text-white flex items-center gap-1.5">
+          <span>💳</span> <span>Credits & Free Quota Usage</span>
+        </div>
+        <ul class="list-disc list-inside space-y-1 text-indigo-200 text-[11px]">
+          <li><strong>Free Tier Credits:</strong> Personal Google Accounts include free tier usage limits for Gemini models (e.g. 15 RPM for Gemini 2.5 Flash).</li>
+          <li><strong>GCP Project Billing:</strong> Pay-as-you-go project credits and higher rate limits apply automatically when signing in and enabling billing on your Google Cloud Project.</li>
+          <li><strong>No Credit Card Required:</strong> You can create and use a free Google AI Studio key instantly without adding billing credentials.</li>
+        </ul>
+      </div>
+
+      <div class="flex items-center gap-2 pt-1">
+        <a href="https://aistudio.google.com" target="_blank" class="bg-white hover:bg-indigo-50 text-indigo-900 font-bold px-3.5 py-1.5 rounded-lg inline-flex items-center gap-1.5 shadow-2xs transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+          <span>Sign In with Google to AI Studio</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- Main Chat Log -->
   <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-slate-50">
     <!-- Setup Alert if API Key is empty -->
-    <div id="api-key-banner" class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl text-xs space-y-2 text-amber-900 shadow-2xs">
-      <p class="text-amber-900 font-bold flex items-center gap-1.5 text-xs">⚠️ Set Up API Key</p>
-      <p class="text-amber-800">To start using the chatbot, please generate a free API Key on <a href="https://aistudio.google.com" target="_blank" class="text-indigo-600 underline font-semibold">aistudio.google.com</a> and save it below:</p>
-      <div class="flex space-x-2 mt-1">
+    <div id="api-key-banner" class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl text-xs space-y-2.5 text-amber-900 shadow-2xs">
+      <div class="flex items-center justify-between">
+        <p class="text-amber-900 font-bold flex items-center gap-1.5 text-xs">⚠️ Google Account & API Key Required</p>
+        <span class="bg-amber-200/60 text-amber-900 text-[10px] font-semibold px-2 py-0.5 rounded-full">Free Tier & Credits Available</span>
+      </div>
+      <p class="text-amber-800 leading-relaxed">Sign in to your Google Account at <strong>aistudio.google.com</strong> to generate your API Key or manage Google Cloud credits:</p>
+      
+      <div class="flex flex-wrap items-center gap-2 pt-0.5">
+        <a href="https://aistudio.google.com" target="_blank" class="bg-white hover:bg-amber-100/50 text-slate-900 border border-slate-300 rounded-lg px-3 py-1.5 font-semibold transition inline-flex items-center gap-1.5 shadow-2xs">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+          <span>Sign In to Google AI Studio</span>
+        </a>
+      </div>
+
+      <div class="flex space-x-2 pt-1">
         <input type="password" id="api-key-input" placeholder="AI Studio API Key" class="bg-white text-slate-900 border border-slate-300 rounded-lg px-3 py-1.5 flex-1 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
-        <button id="btn-save-key" class="bg-amber-600 hover:bg-amber-700 text-white rounded-lg px-3.5 py-1.5 font-semibold transition shadow-2xs">Save</button>
+        <button id="btn-save-key" class="bg-amber-600 hover:bg-amber-700 text-white rounded-lg px-3.5 py-1.5 font-semibold transition shadow-2xs">Save Key</button>
       </div>
     </div>
 
@@ -787,6 +835,19 @@ export function getWebviewHtmlTemplate(config: ExtensionConfig): string {
     const btnReadActive = document.getElementById('btn-read-active');
     const btnReadSol = document.getElementById('btn-read-sol');
     const contextIndicator = document.getElementById('active-context-indicator');
+
+    const btnAccountInfo = document.getElementById('btn-account-info');
+    const accountInfoModal = document.getElementById('account-info-modal');
+    const btnCloseAccountModal = document.getElementById('btn-close-account-modal');
+
+    if (btnAccountInfo && accountInfoModal && btnCloseAccountModal) {
+      btnAccountInfo.addEventListener('click', () => {
+        accountInfoModal.classList.toggle('hidden');
+      });
+      btnCloseAccountModal.addEventListener('click', () => {
+        accountInfoModal.classList.add('hidden');
+      });
+    }
 
     // Load saved API Key from localStorage
     let currentApiKey = localStorage.getItem('AISTUDIO_API_KEY') || "";
