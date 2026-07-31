@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google AI Studio Chatbot</title>
+  <!-- Tailwind CSS & Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #18181b;
+      color: #f4f4f5;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #18181b;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 3px;
+    }
+    .code-block {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #27272a;
+      border: 1px solid #3f3f46;
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+  <!-- Header -->
+  <div class="bg-zinc-900 px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+      <span class="text-sm font-bold text-zinc-100 tracking-tight">Google AI Studio Chatbot</span>
+    </div>
+    <span class="text-xs font-mono bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded border border-indigo-800">gemini-1.5-flash</span>
+  </div>
+
+  <!-- Main Chat Log -->
+  <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+    <!-- Setup Banner for API Key -->
+    <div id="api-key-banner" class="bg-amber-950 bg-opacity-40 border border-amber-800 p-3 rounded-lg text-xs space-y-2">
+      <p class="text-amber-200 font-semibold flex items-center gap-1">
+        <span>⚠️</span> <span>Connect Google AI Studio API Key</span>
+      </p>
+      <p class="text-zinc-300">Enter your Google AI Studio API key below (get a free key at <a href="https://aistudio.google.com" target="_blank" class="text-sky-400 underline font-medium">aistudio.google.com</a>):</p>
+      <div class="flex space-x-2 mt-1">
+        <input type="password" id="api-key-input" placeholder="AI Studio API Key" class="bg-zinc-900 text-white border border-zinc-700 rounded px-2.5 py-1.5 flex-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+        <button id="btn-save-key" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded px-3 py-1.5 font-medium transition shadow-sm">Save Key</button>
+      </div>
+    </div>
+
+    <!-- Initial Assistant Greeting -->
+    <div class="flex space-x-3">
+      <div class="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 shadow">AI</div>
+      <div class="bg-zinc-900 p-3.5 rounded-lg max-w-sm text-sm space-y-2 border border-zinc-800 shadow">
+        <p class="font-semibold text-zinc-100">Welcome to Visual Studio AI Assistant!</p>
+        <p class="text-zinc-300">I am connected to Google AI Studio. Highlight code in your editor and choose a command below or type any question:</p>
+        <div id="command-buttons" class="grid grid-cols-1 gap-1.5 mt-2">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Code Selection Area -->
+  <div id="selection-banner" class="hidden bg-indigo-950 bg-opacity-70 border-t border-indigo-900 px-4 py-2 text-xs flex justify-between items-center">
+    <div class="flex items-center space-x-2 text-indigo-200 font-mono">
+      <span>📄 Code Selection captured</span>
+    </div>
+    <button id="btn-clear-selection" class="text-zinc-400 hover:text-white transition text-xs">Clear</button>
+  </div>
+
+  <!-- Context Actions Toolbar -->
+  <div class="px-3 py-1.5 bg-zinc-900 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
+    <div class="flex items-center space-x-2">
+      <button id="btn-read-active" class="flex items-center space-x-1 bg-zinc-800 hover:bg-zinc-700 hover:text-white px-2.5 py-1 rounded border border-zinc-700 transition">
+        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>Read Active File</span>
+      </button>
+      <button id="btn-read-sol" class="flex items-center space-x-1 bg-zinc-800 hover:bg-zinc-700 hover:text-white px-2.5 py-1 rounded border border-zinc-700 transition">
+        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+        <span>Solution Index</span>
+      </button>
+    </div>
+    <div id="active-context-indicator" class="text-[10px] text-indigo-300 font-mono italic max-w-xs truncate">
+      Ready
+    </div>
+  </div>
+
+  <!-- Input Console -->
+  <div class="p-3 bg-zinc-900 border-t border-zinc-800">
+    <div class="flex space-x-2">
+      <textarea id="prompt-input" rows="1" placeholder="Type prompt or /explain, /refactor, /fix..." class="flex-1 bg-zinc-800 text-white border border-zinc-700 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none h-10 custom-scrollbar"></textarea>
+      <button id="btn-send" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 flex items-center justify-center transition focus:outline-none shadow">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const COMMANDS = [
+      {
+        id: "cmd-explain",
+        command: "/explain",
+        description: "Analyze and explain selected code step-by-step",
+        systemPrompt: "Analyze the selected code block. Explain exactly how it works, inputs/outputs, and highlight edge cases or potential bugs."
+      },
+      {
+        id: "cmd-refactor",
+        command: "/refactor",
+        description: "Rewrite code following async, DRY, and clean patterns",
+        systemPrompt: "Refactor the selected code. Focus heavily on clean C# design patterns, performance, proper naming, and async-await standards."
+      },
+      {
+        id: "cmd-fix",
+        command: "/fix",
+        description: "Fix semantic/logic bugs and output corrected code",
+        systemPrompt: "Examine the selected code for bugs, boundary errors, or null references. Output a fully corrected C# code block."
+      }
+    ];
+
+    const SYSTEM_PROMPT = "You are an elite coding assistant inside a Visual Studio chatbot tool window. Give concise, well-annotated C# or visual solutions. Do not include verbose introductory explanations.";
+    const DEFAULT_MODEL = "gemini-1.5-flash";
+
+    let selectedCode = "";
+    let activeDocumentCode = "";
+    let activeDocumentName = "";
+    let solutionStructure = null;
+    let lastGeneratedCode = "";
+
+    // DOM Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const apiKeyInput = document.getElementById('api-key-input');
+    const saveKeyBtn = document.getElementById('btn-save-key');
+    const promptInput = document.getElementById('prompt-input');
+    const sendBtn = document.getElementById('btn-send');
+    const selectionBanner = document.getElementById('selection-banner');
+    const clearSelectionBtn = document.getElementById('btn-clear-selection');
+    const commandButtonsContainer = document.getElementById('command-buttons');
+    const apiKeyBanner = document.getElementById('api-key-banner');
+    const btnReadActive = document.getElementById('btn-read-active');
+    const btnReadSol = document.getElementById('btn-read-sol');
+    const contextIndicator = document.getElementById('active-context-indicator');
+
+    // Load saved API Key from localStorage
+    let currentApiKey = localStorage.getItem('AISTUDIO_API_KEY') || "";
+    if (currentApiKey) {
+      apiKeyInput.value = currentApiKey;
+      apiKeyBanner.classList.add('hidden');
+    }
+
+    // Save API key
+    saveKeyBtn.addEventListener('click', () => {
+      const key = apiKeyInput.value.trim();
+      if (key) {
+        localStorage.setItem('AISTUDIO_API_KEY', key);
+        currentApiKey = key;
+        apiKeyBanner.innerHTML = '<p class="text-emerald-400 font-semibold">✓ API Key saved successfully!</p>';
+        setTimeout(() => apiKeyBanner.classList.add('hidden'), 1200);
+      }
+    });
+
+    // Populate quick slash commands
+    COMMANDS.forEach(cmd => {
+      const btn = document.createElement('button');
+      btn.className = "text-left text-xs bg-zinc-800 hover:bg-zinc-700 text-indigo-200 px-2.5 py-1.5 rounded transition font-mono border border-zinc-700 hover:border-indigo-500";
+      btn.innerHTML = `<span class="font-bold text-indigo-400">${cmd.command}</span> ${cmd.description}`;
+      btn.addEventListener('click', () => {
+        executeCommand(cmd);
+      });
+      commandButtonsContainer.appendChild(btn);
+    });
+
+    // Request Active Document Context from C# Visual Studio SDK
+    btnReadActive.addEventListener('click', () => {
+      if (window.chrome && window.chrome.webview) {
+        contextIndicator.innerText = "Querying VS for active document...";
+        window.chrome.webview.postMessage({ type: 'get_active_document_request' });
+      } else {
+        handleActiveDocumentResponse("Program.cs", "using System;\nclass Program { static void Main() { Console.WriteLine(\"Hello\"); } }");
+      }
+    });
+
+    // Request Solution file structure
+    btnReadSol.addEventListener('click', () => {
+      if (window.chrome && window.chrome.webview) {
+        contextIndicator.innerText = "Reading Solution workspace...";
+        window.chrome.webview.postMessage({ type: 'get_solution_structure_request' });
+      } else {
+        handleSolutionStructureResponse(["Program.cs", "App.config", "aistudiochatbotintegrator.csproj"]);
+      }
+    });
+
+    function handleActiveDocumentResponse(fileName, code) {
+      if (!code) {
+        contextIndicator.innerText = "Active file empty or unreadable.";
+        return;
+      }
+      activeDocumentName = fileName;
+      activeDocumentCode = code;
+      contextIndicator.innerHTML = `<span class="text-emerald-400 font-semibold">● ${fileName} Loaded</span>`;
+      addMessage('assistant', `📄 **Captured active file (${fileName})** into chat memory. You can ask me to explain or refactor it!`);
+    }
+
+    function handleSolutionStructureResponse(files) {
+      if (!files || files.length === 0) {
+        contextIndicator.innerText = "No solution files found.";
+        return;
+      }
+      solutionStructure = files;
+      contextIndicator.innerHTML = `<span class="text-indigo-400 font-semibold">● Solution (${files.length} Files)</span>`;
+      const formattedList = files.map(f => `- ` + f).join('\n');
+      addMessage('assistant', `📂 **Captured solution workspace files:**\n\n${formattedList}`);
+    }
+
+    // Handle WebView2 messages sent from C# (Visual Studio Editor selection)
+    if (window.chrome && window.chrome.webview) {
+      window.chrome.webview.addEventListener('message', event => {
+        const msg = event.data;
+        if (msg.type === 'selection' || msg.type === 'selection_response') {
+          selectedCode = msg.code || "";
+          if (selectedCode) {
+            selectionBanner.classList.remove('hidden');
+            const lines = selectedCode.split('\n').length;
+            selectionBanner.querySelector('span').innerText = `📄 Code Selection captured (${lines} lines)`;
+          } else {
+            selectionBanner.classList.add('hidden');
+          }
+        } else if (msg.type === 'active_document_response') {
+          handleActiveDocumentResponse(msg.fileName, msg.code);
+        } else if (msg.type === 'solution_structure_response') {
+          handleSolutionStructureResponse(msg.files);
+        } else if (msg.type === 'request_code') {
+          if (lastGeneratedCode) {
+            window.chrome.webview.postMessage({
+              type: 'insert_code',
+              code: lastGeneratedCode
+            });
+          } else {
+            addMessage('assistant', 'No code solution generated yet. Ask me to refactor or write code first.');
+          }
+        }
+      });
+    }
+
+    clearSelectionBtn.addEventListener('click', () => {
+      selectedCode = "";
+      selectionBanner.classList.add('hidden');
+    });
+
+    promptInput.addEventListener('input', () => {
+      promptInput.style.height = 'auto';
+      promptInput.style.height = (promptInput.scrollHeight > 120 ? 120 : promptInput.scrollHeight) + 'px';
+    });
+
+    promptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessageFlow();
+      }
+    });
+
+    sendBtn.addEventListener('click', sendMessageFlow);
+
+    async function sendMessageFlow() {
+      const prompt = promptInput.value.trim();
+      if (!prompt) return;
+
+      promptInput.value = "";
+      promptInput.style.height = '40px';
+
+      const foundCommand = COMMANDS.find(c => prompt.toLowerCase().startsWith(c.command.toLowerCase()));
+      if (foundCommand) {
+        executeCommand(foundCommand, prompt.substring(foundCommand.command.length).trim());
+      } else {
+        await executeChatQuery(prompt);
+      }
+    }
+
+    async function executeCommand(cmd, additionalInstruction = "") {
+      let promptText = cmd.systemPrompt;
+      if (additionalInstruction) {
+        promptText += "\n\nAdditional user instructions: " + additionalInstruction;
+      }
+      if (selectedCode) {
+        promptText += "\n\nTarget Code Selection:\n```\n" + selectedCode + "\n```";
+      }
+      if (activeDocumentCode) {
+        promptText += "\n\nEntire active document content (" + activeDocumentName + "):\n```\n" + activeDocumentCode + "\n```";
+      }
+
+      addMessage('user', `Running command: ${cmd.command} ${additionalInstruction}`);
+      await fetchGeminiResponse(promptText);
+    }
+
+    async function executeChatQuery(userPrompt) {
+      let promptText = userPrompt;
+      if (selectedCode) {
+        promptText += "\n\nContext Selected Code:\n```\n" + selectedCode + "\n```";
+      }
+      if (activeDocumentCode) {
+        promptText += "\n\nEntire active document content (" + activeDocumentName + "):\n```\n" + activeDocumentCode + "\n```";
+      }
+
+      addMessage('user', userPrompt);
+      await fetchGeminiResponse(promptText);
+    }
+
+    function addMessage(role, content) {
+      const isUser = role === 'user';
+      const msgDiv = document.createElement('div');
+      msgDiv.className = "flex space-x-3 " + (isUser ? "justify-end" : "");
+
+      const formattedContent = formatMarkdown(content);
+
+      msgDiv.innerHTML = isUser 
+        ? `
+          <div class="bg-indigo-900 text-indigo-50 p-3 rounded-lg max-w-sm text-sm border border-indigo-700 shadow-sm">
+            ${formattedContent}
+          </div>
+        `
+        : `
+          <div class="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 shadow">AI</div>
+          <div class="bg-zinc-900 p-3.5 rounded-lg max-w-sm text-sm space-y-2 text-zinc-200 border border-zinc-800 shadow">
+            ${formattedContent}
+          </div>
+        `;
+
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      if (!isUser) {
+        const codeBlockMatch = content.match(/```(?:[a-zA-Z]+)?\n([\s\S]*?)```/);
+        if (codeBlockMatch && codeBlockMatch[1]) {
+          lastGeneratedCode = codeBlockMatch[1];
+          
+          const lastCard = msgDiv.querySelector('.bg-zinc-900');
+          const insertBtn = document.createElement('button');
+          insertBtn.className = "mt-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-2.5 py-1.5 rounded flex items-center space-x-1 font-semibold transition shadow-sm";
+          insertBtn.innerHTML = '<svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8"/></svg> Insert Code into Visual Studio Editor';
+          insertBtn.addEventListener('click', () => {
+            if (window.chrome && window.chrome.webview) {
+              window.chrome.webview.postMessage({
+                type: 'insert_code',
+                code: lastGeneratedCode
+              });
+            } else {
+              navigator.clipboard.writeText(lastGeneratedCode);
+              alert('Copied to clipboard!\n\n' + lastGeneratedCode);
+            }
+          });
+          lastCard.appendChild(insertBtn);
+        }
+      }
+    }
+
+    async function fetchGeminiResponse(fullPrompt) {
+      if (!currentApiKey) {
+        apiKeyBanner.classList.remove('hidden');
+        addMessage('assistant', '⚠️ Please enter and save your Google AI Studio API Key in the banner configuration at the top to proceed.');
+        return;
+      }
+
+      const typingDiv = document.createElement('div');
+      typingDiv.className = "flex space-x-3 animate-pulse";
+      typingDiv.innerHTML = `
+        <div class="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">AI</div>
+        <div class="bg-zinc-900 p-3 rounded-lg max-w-sm text-sm text-zinc-400 font-medium border border-zinc-800">
+          Analyzing request with Gemini...
+        </div>
+      `;
+      chatMessages.appendChild(typingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${currentApiKey}`;
+        
+        const contents = [{ role: "user", parts: [{ text: fullPrompt }] }];
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents,
+            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            generationConfig: { temperature: 0.7 }
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error?.message || 'Failed to query Gemini API');
+        }
+
+        const data = await response.json();
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No output returned.";
+        
+        typingDiv.remove();
+        addMessage('assistant', responseText);
+      } catch (err) {
+        typingDiv.remove();
+        addMessage('assistant', '❌ Error: ' + err.message);
+      }
+    }
+
+    function formatMarkdown(text) {
+      let escaped = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      escaped = escaped.replace(/```(.*?)\n([\s\S]*?)```/g, (match, lang, code) => {
+        return `<pre class="code-block text-xs p-3 rounded-md overflow-x-auto my-2 text-indigo-100"><code class="language-${lang}">${code.trim()}</code></pre>`;
+      });
+
+      escaped = escaped.replace(/`(.*?)`/g, '<code class="bg-zinc-800 px-1 py-0.5 rounded text-indigo-300 font-mono text-xs">$1</code>');
+      escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+      escaped = escaped.replace(/\n/g, '<br>');
+
+      return escaped;
+    }
+  </script>
+</body>
+</html>

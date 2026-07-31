@@ -18,6 +18,9 @@ namespace MyAIStudioExtension
         {
             try
             {
+                // Set default background color to dark zinc (#18181b) to avoid white or black blank flash
+                webView.DefaultBackgroundColor = System.Drawing.Color.FromArgb(255, 24, 24, 27);
+
                 // Create custom UserDataFolder in LocalAppData so WebView2 has write permissions when running inside Visual Studio (devenv.exe)
                 string userDataFolder = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -27,19 +30,43 @@ namespace MyAIStudioExtension
                 Directory.CreateDirectory(userDataFolder);
 
                 CoreWebView2Environment env = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
+                
+                // Wire navigation events before initialization
+                webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
                 await webView.EnsureCoreWebView2Async(env);
 
                 string assemblyFolder = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                string htmlPath = Path.Combine(assemblyFolder, "index.html");
+                
+                // Look for chatbot.html first, then fallback to index.html
+                string htmlPath = Path.Combine(assemblyFolder, "chatbot.html");
+                if (!File.Exists(htmlPath))
+                {
+                    htmlPath = Path.Combine(assemblyFolder, "index.html");
+                }
 
                 if (File.Exists(htmlPath))
                 {
+                    string targetFileName = Path.GetFileName(htmlPath);
                     webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                         "aistudio.local",
                         assemblyFolder,
                         CoreWebView2HostResourceAccessKind.Allow
                     );
-                    webView.CoreWebView2.Navigate("https://aistudio.local/index.html");
+
+                    webView.CoreWebView2.NavigationCompleted += (s, e) =>
+                    {
+                        if (e.IsSuccess)
+                        {
+                            if (txtError != null) txtError.Visibility = Visibility.Collapsed;
+                            webView.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            ShowError($"Failed to load web content. Error status: {e.WebErrorStatus}");
+                        }
+                    };
+
+                    webView.CoreWebView2.Navigate($"https://aistudio.local/{targetFileName}");
                 }
                 else
                 {
@@ -55,26 +82,35 @@ namespace MyAIStudioExtension
 </head>
 <body>
     <h2>AI Studio Chatbot</h2>
-    <p>index.html not found in output folder. Ensure index.html is copied to the extension output directory.</p>
+    <p>chatbot.html or index.html not found in extension output directory.</p>
 </body>
 </html>");
-                }
-
-                if (txtError != null)
-                {
-                    txtError.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"WebView2 initialization failed: {ex}");
-                
-                if (txtError != null)
-                {
-                    txtError.Text = $"Failed to initialize WebView2:\n\n{ex.Message}\n\nPlease ensure Microsoft Edge WebView2 Runtime is installed.";
-                    txtError.Visibility = Visibility.Visible;
-                }
+                ShowError($"Failed to initialize WebView2:\n\n{ex.Message}\n\nPlease ensure Microsoft Edge WebView2 Runtime is installed.");
             }
+        }
+
+        private void WebView_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            if (!e.IsSuccess)
+            {
+                ShowError($"WebView2 Core Initialization Error:\n\n{e.InitializationException?.Message}");
+            }
+        }
+
+        private void ShowError(string message)
+        {
+            if (txtError != null)
+            {
+                txtError.Text = message;
+                txtError.Visibility = Visibility.Visible;
+            }
+            webView.Visibility = Visibility.Collapsed;
         }
     }
 }
+

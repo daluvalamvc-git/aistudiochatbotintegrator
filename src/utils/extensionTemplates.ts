@@ -164,6 +164,10 @@ export function getCsprojTemplate(config: ExtensionConfig, projectName: string =
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="chatbot.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
