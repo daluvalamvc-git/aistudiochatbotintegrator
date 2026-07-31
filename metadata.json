@@ -1,0 +1,6 @@
+{
+  "name": "Visual Studio Chatbot Extension Creator",
+  "description": "A builder, simulator, and download portal for custom Visual Studio 2026 chatbot extensions that connect to Google AI Studio to send prompts, run commands, and request coding solutions directly in the IDE.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
