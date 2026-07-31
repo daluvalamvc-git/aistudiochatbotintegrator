@@ -1099,7 +1099,7 @@ This is because your Visual Studio installation is **missing the Extension SDK t
 ## How to Build and Run
 
 1. **Extract** the files from this downloaded zip package to a directory of your choice.
-2. **Open the Solution**: Launch Visual Studio and open the \`MyAIStudioExtension.sln\` or \`MyAIStudioExtension.csproj\` file.
+2. **Open the Solution**: Launch Visual Studio and open \`aistudiochatbotintegrator.sln\` (or \`aistudiochatbotintegrator.csproj\`).
 3. **Restore Packages**: Visual Studio will automatically download NuGet dependencies:
    - \`Microsoft.VisualStudio.SDK\`
    - \`Microsoft.VSSDK.BuildTools\`
@@ -1122,8 +1122,8 @@ This is because your Visual Studio installation is **missing the Extension SDK t
 1. In your primary Visual Studio solution window, switch your build configuration from **Debug** to **Release**.
 2. Go to **Build > Build Solution**.
 3. Locate the compiled \`.vsix\` installer file at:
-   \`\\bin\\Release\\MyAIStudioExtension.vsix\`
-4. Double-click the \`MyAIStudioExtension.vsix\` file. This opens the VSIX Installer.
+   \`\\bin\\Release\\aistudiochatbotintegrator.vsix\`
+4. Double-click the \`aistudiochatbotintegrator.vsix\` file. This opens the VSIX Installer.
 5. Choose your target IDE instance (e.g., Visual Studio 2026 Community) and click **Modify**.
 6. Restart Visual Studio. The tool window will now be permanently installed in your primary IDE!
 `;
@@ -1551,5 +1551,49 @@ export function getBackendAppSettingsTemplate(config: ExtensionConfig): string {
   }
 }`;
 }
+
+export function getGitignoreTemplate(): string {
+  return `# Visual Studio IDE & Cache
+.vs/
+*.suo
+*.user
+*.userosv
+*.userprefs
+*.sln.docstates
+*.cache
+
+# MSBuild & C# Build Outputs
+bin/
+obj/
+backend/bin/
+backend/obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.vsix
+*.pkgdef
+
+# NuGet & Build Cache Artifacts
+project.assets.json
+project.nuget.cache
+*.nuget.g.props
+*.nuget.g.targets
+
+# GitHub Copilot & Local IDE files
+.github/copilot-instructions.md
+
+# Node / Vite / Frontend
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.env*
+!.env.example
+.DS_Store
+`;
+}
+
 
 

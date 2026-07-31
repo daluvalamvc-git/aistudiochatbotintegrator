@@ -1,8 +1,40 @@
+# Visual Studio IDE & Cache
+.vs/
+*.suo
+*.user
+*.userosv
+*.userprefs
+*.sln.docstates
+*.cache
+
+# MSBuild & C# Build Outputs
+bin/
+obj/
+backend/bin/
+backend/obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.vsix
+*.pkgdef
+
+# NuGet & Build Cache Artifacts
+project.assets.json
+project.nuget.cache
+*.nuget.g.props
+*.nuget.g.targets
+
+# GitHub Copilot & Local IDE files
+.github/copilot-instructions.md
+
+# Node / Vite / Frontend
 node_modules/
-build/
 dist/
+build/
 coverage/
-.DS_Store
 *.log
 .env*
 !.env.example
+.DS_Store
+

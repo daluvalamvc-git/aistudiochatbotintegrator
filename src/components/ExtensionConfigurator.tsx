@@ -10,10 +10,10 @@ import {
   getPackageTemplate, getChatWindowTemplate, getChatWindowCommandTemplate, 
   getChatWindowControlXamlTemplate, getChatWindowControlCsTemplate, 
   getPropertiesAssemblyInfoTemplate, getWebviewHtmlTemplate, getReadmeTemplate,
-  getSlnTemplate, getBackendCsprojTemplate, getBackendSlnTemplate, getBackendProgramCsTemplate,
+  getSlnTemplate, getBackendCsprojTemplate, getBackendProgramCsTemplate,
   getBackendChatControllerCsTemplate, getBackendHealthControllerCsTemplate,
   getBackendGeminiServiceCsTemplate, getBackendChatModelsCsTemplate,
-  getBackendAppSettingsTemplate
+  getBackendAppSettingsTemplate, getGitignoreTemplate
 } from "../utils/extensionTemplates";
 
 interface Props {
@@ -70,10 +70,9 @@ export default function ExtensionConfigurator({ config, onChange }: Props) {
       const zip = new JSZip();
 
       // Folder structure creation
-      zip.file("MyAIStudioExtension.sln", getSlnTemplate(config, "MyAIStudioExtension", "MyAIStudioExtension.csproj"));
+      zip.file(".gitignore", getGitignoreTemplate());
       zip.file("aistudiochatbotintegrator.sln", getSlnTemplate(config, "aistudiochatbotintegrator", "aistudiochatbotintegrator.csproj"));
       zip.file("source.extension.vsixmanifest", getManifestTemplate(config, "aistudiochatbotintegrator"));
-      zip.file("MyAIStudioExtension.csproj", getCsprojTemplate(config, "MyAIStudioExtension"));
       zip.file("aistudiochatbotintegrator.csproj", getCsprojTemplate(config, "aistudiochatbotintegrator"));
       zip.file("MyAIStudioExtensionPackage.vsct", getPackageVsctTemplate(config));
       zip.file("MyAIStudioExtensionPackage.cs", getPackageTemplate(config));
@@ -88,7 +87,6 @@ export default function ExtensionConfigurator({ config, onChange }: Props) {
       const backendFolder = zip.folder("backend");
       if (backendFolder) {
         backendFolder.file("MyAIStudioBackend.csproj", getBackendCsprojTemplate());
-        backendFolder.file("MyAIStudioBackend.sln", getBackendSlnTemplate());
         backendFolder.file("Program.cs", getBackendProgramCsTemplate());
         backendFolder.file("appsettings.json", getBackendAppSettingsTemplate(config));
         
