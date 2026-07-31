@@ -16,6 +16,8 @@
     <RootNamespace>aistudiochatbotintegrator</RootNamespace>
     <AssemblyName>aistudiochatbotintegrator</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
+    <RuntimeIdentifiers>win;win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <CreateVsixContainer>true</CreateVsixContainer>

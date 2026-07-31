@@ -75,6 +75,8 @@ export function getCsprojTemplate(config: ExtensionConfig, projectName: string =
     <RootNamespace>${projectName}</RootNamespace>
     <AssemblyName>${projectName}</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
+    <RuntimeIdentifiers>win;win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultItems>false</EnableDefaultItems>
