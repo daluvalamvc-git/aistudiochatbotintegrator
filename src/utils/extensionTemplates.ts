@@ -174,7 +174,7 @@ export function getCsprojTemplate(config: ExtensionConfig, projectName: string =
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\\Microsoft.CSharp.targets" />
-  <Import Project="$(VSToolsPath)\\VSSDK\\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(VSToolsPath)\\VSSDK\\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != '' and Exists('$(VSToolsPath)\\VSSDK\\Microsoft.VsSDK.targets')" />
 </Project>`;
 }
 
