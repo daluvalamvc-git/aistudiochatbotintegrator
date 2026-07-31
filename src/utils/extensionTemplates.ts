@@ -75,6 +75,7 @@ export function getCsprojTemplate(config: ExtensionConfig): string {
     <RootNamespace>MyAIStudioExtension</RootNamespace>
     <AssemblyName>MyAIStudioExtension</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <CreateVsixContainer>true</CreateVsixContainer>
