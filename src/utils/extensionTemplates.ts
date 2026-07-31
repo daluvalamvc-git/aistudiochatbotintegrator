@@ -12,7 +12,7 @@ const escapeXml = (str: string) =>
 const escapeCSharpString = (str: string) =>
   str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n").replace(/\r/g, "\\r");
 
-export function getManifestTemplate(config: ExtensionConfig): string {
+export function getManifestTemplate(config: ExtensionConfig, projectName: string = "MyAIStudioExtension"): string {
   const safeName = escapeXml(config.extensionName);
   const safeAuthor = escapeXml(config.author);
   const safeDesc = escapeXml(config.description || "Chatbot tool window for Visual Studio to connect with Google AI Studio.");
@@ -47,12 +47,12 @@ export function getManifestTemplate(config: ExtensionConfig): string {
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.7.2,)" />
   </Dependencies>
   <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" ProjectName="MyAIStudioExtension" Path="|MyAIStudioExtension;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" ProjectName="${projectName}" Path="|${projectName};PkgdefProjectOutputGroup|" />
   </Assets>
 </PackageManifest>`;
 }
 
-export function getCsprojTemplate(config: ExtensionConfig): string {
+export function getCsprojTemplate(config: ExtensionConfig, projectName: string = "MyAIStudioExtension"): string {
   const isVs2026 = config.vsVersion === "2026";
   const toolsVersion = isVs2026 ? "Current" : "15.0";
   const minVsVersion = isVs2026 ? "18.0" : "17.0";
@@ -72,8 +72,8 @@ export function getCsprojTemplate(config: ExtensionConfig): string {
     <ProjectTypeGuids>{82b43b9b-a2a3-4d64-ab2b-51118f6179bc};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MyAIStudioExtension</RootNamespace>
-    <AssemblyName>MyAIStudioExtension</AssemblyName>
+    <RootNamespace>${projectName}</RootNamespace>
+    <AssemblyName>${projectName}</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
@@ -82,7 +82,7 @@ export function getCsprojTemplate(config: ExtensionConfig): string {
     <DeployExtension>true</DeployExtension>
     <DeployVSTemplates>false</DeployVSTemplates>
     <CopyVsixManifestToOutput>true</CopyVsixManifestToOutput>
-    <TargetVsixContainerName>MyAIStudioExtension.vsix</TargetVsixContainerName>
+    <TargetVsixContainerName>${projectName}.vsix</TargetVsixContainerName>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>

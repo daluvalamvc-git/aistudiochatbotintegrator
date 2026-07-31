@@ -72,9 +72,9 @@ export default function ExtensionConfigurator({ config, onChange }: Props) {
       // Folder structure creation
       zip.file("MyAIStudioExtension.sln", getSlnTemplate(config, "MyAIStudioExtension", "MyAIStudioExtension.csproj"));
       zip.file("aistudiochatbotintegrator.sln", getSlnTemplate(config, "aistudiochatbotintegrator", "aistudiochatbotintegrator.csproj"));
-      zip.file("source.extension.vsixmanifest", getManifestTemplate(config));
-      zip.file("MyAIStudioExtension.csproj", getCsprojTemplate(config));
-      zip.file("aistudiochatbotintegrator.csproj", getCsprojTemplate(config));
+      zip.file("source.extension.vsixmanifest", getManifestTemplate(config, "aistudiochatbotintegrator"));
+      zip.file("MyAIStudioExtension.csproj", getCsprojTemplate(config, "MyAIStudioExtension"));
+      zip.file("aistudiochatbotintegrator.csproj", getCsprojTemplate(config, "aistudiochatbotintegrator"));
       zip.file("MyAIStudioExtensionPackage.vsct", getPackageVsctTemplate(config));
       zip.file("MyAIStudioExtensionPackage.cs", getPackageTemplate(config));
       zip.file("ChatWindow.cs", getChatWindowTemplate(config));
