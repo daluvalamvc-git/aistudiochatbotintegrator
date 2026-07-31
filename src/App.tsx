@@ -13,7 +13,7 @@ export default function App() {
     author: "DevTools LLC",
     version: "1.0.0",
     description: "Connects Visual Studio 2026 securely to Google AI Studio to run custom coding commands, prompts, and inject code solutions.",
-    defaultModel: "gemini-3.5-flash",
+    defaultModel: "gemini-2.5-flash",
     systemPrompt: "You are an elite coding assistant inside a Visual Studio chatbot tool window. Give concise, well-annotated C# or visual solutions. Do not include verbose introductory explanations.",
     vsVersion: "2026",
     slashCommands: [

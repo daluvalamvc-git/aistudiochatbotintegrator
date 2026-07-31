@@ -638,56 +638,88 @@ export function getWebviewHtmlTemplate(config: ExtensionConfig): string {
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #1e1e1e;
-      color: #d4d4d4;
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+    input, textarea, select, button {
+      font-family: inherit;
+    }
+    textarea, input[type="text"], input[type="password"] {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      -webkit-text-fill-color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important;
+      caret-color: #4f46e5 !important;
+    }
+    textarea::placeholder, input::placeholder {
+      color: #64748b !important;
+      -webkit-text-fill-color: #64748b !important;
+      opacity: 1 !important;
+    }
+    textarea:focus, input:focus {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      -webkit-text-fill-color: #0f172a !important;
+      border-color: #4f46e5 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
     }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: #1e1e1e;
+      background: #f1f5f9;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #3e3e3e;
+      background: #cbd5e1;
       border-radius: 3px;
     }
     .code-block {
       font-family: 'JetBrains Mono', monospace;
-      background-color: #2d2d2d;
-      border: 1px solid #404040;
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border: 1px solid #334155 !important;
     }
   </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden">
+<body class="h-screen flex flex-col overflow-hidden bg-slate-50 text-slate-900">
 
   <!-- Header -->
-  <div class="bg-gray-800 px-4 py-2 border-b border-gray-700 flex items-center justify-between">
+  <div class="bg-white px-4 py-3 border-b border-slate-200 flex items-center justify-between shadow-2xs">
     <div class="flex items-center space-x-2">
-      <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-      <span class="text-sm font-semibold text-gray-100">${escapeXml(config.extensionName)}</span>
+      <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+      <span class="text-sm font-bold text-slate-900 tracking-tight">${escapeXml(config.extensionName)}</span>
     </div>
-    <span class="text-xs bg-indigo-900 text-indigo-200 px-2 py-0.5 rounded">${escapeXml(config.defaultModel)}</span>
+    <div class="flex items-center space-x-2">
+      <label for="model-select" class="text-xs text-slate-500 font-medium">Model:</label>
+      <select id="model-select" class="bg-slate-50 text-indigo-700 font-mono text-xs px-2.5 py-1 rounded-md border border-slate-300 focus:outline-none focus:border-indigo-600 cursor-pointer font-medium shadow-2xs">
+        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+        <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
+        <option value="gemini-2.5-pro">gemini-2.5-pro</option>
+      </select>
+    </div>
   </div>
 
   <!-- Main Chat Log -->
-  <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+  <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-slate-50">
     <!-- Setup Alert if API Key is empty -->
-    <div id="api-key-banner" class="bg-yellow-900 bg-opacity-30 border border-yellow-700 p-3 rounded text-xs space-y-2">
-      <p class="text-yellow-200 font-semibold">⚠️ Set Up API Key</p>
-      <p class="text-gray-300">To start using the chatbot, please generate a free API Key on <a href="https://aistudio.google.com" target="_blank" class="text-blue-400 underline">aistudio.google.com</a> and save it below:</p>
+    <div id="api-key-banner" class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl text-xs space-y-2 text-amber-900 shadow-2xs">
+      <p class="text-amber-900 font-bold flex items-center gap-1.5 text-xs">⚠️ Set Up API Key</p>
+      <p class="text-amber-800">To start using the chatbot, please generate a free API Key on <a href="https://aistudio.google.com" target="_blank" class="text-indigo-600 underline font-semibold">aistudio.google.com</a> and save it below:</p>
       <div class="flex space-x-2 mt-1">
-        <input type="password" id="api-key-input" placeholder="AI Studio API Key" class="bg-gray-900 text-white border border-gray-700 rounded px-2 py-1 flex-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500">
-        <button id="btn-save-key" class="bg-blue-600 hover:bg-blue-700 text-white rounded px-3 py-1 font-medium transition">Save</button>
+        <input type="password" id="api-key-input" placeholder="AI Studio API Key" class="bg-white text-slate-900 border border-slate-300 rounded-lg px-3 py-1.5 flex-1 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600">
+        <button id="btn-save-key" class="bg-amber-600 hover:bg-amber-700 text-white rounded-lg px-3.5 py-1.5 font-semibold transition shadow-2xs">Save</button>
       </div>
     </div>
 
     <!-- Initial Greeting -->
     <div class="flex space-x-3">
-      <div class="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">AI</div>
-      <div class="bg-gray-800 p-3 rounded-lg max-w-sm text-sm space-y-2">
-        <p class="font-semibold text-gray-200">Hello Developer!</p>
-        <p class="text-gray-300">I am connected to Google AI Studio. Select code in your Visual Studio editor and choose a command below or ask me any question:</p>
-        <div id="command-buttons" class="grid grid-cols-1 gap-1.5 mt-2">
+      <div class="w-8 h-8 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-2xs">AI</div>
+      <div class="bg-white p-4 rounded-2xl max-w-sm text-sm space-y-2 border border-slate-200 shadow-2xs">
+        <p class="font-bold text-slate-900">Hello Developer!</p>
+        <p class="text-slate-600 leading-relaxed">I am connected to Google AI Studio. Select code in your Visual Studio editor and choose a command below or ask me any question:</p>
+        <div id="command-buttons" class="grid grid-cols-1 gap-1.5 mt-2.5">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -695,35 +727,35 @@ export function getWebviewHtmlTemplate(config: ExtensionConfig): string {
   </div>
 
   <!-- Active Code Selection Area -->
-  <div id="selection-banner" class="hidden bg-indigo-950 border-t border-indigo-800 px-4 py-2 text-xs flex justify-between items-center">
-    <div class="flex items-center space-x-2 text-indigo-200">
+  <div id="selection-banner" class="hidden bg-indigo-50 border-t border-indigo-100 px-4 py-2 text-xs flex justify-between items-center text-indigo-900 font-medium">
+    <div class="flex items-center space-x-2 font-mono">
       <span>📄 Code Selection captured (${"{"}selectedLinesCount${"}"} lines)</span>
     </div>
-    <button id="btn-clear-selection" class="text-gray-400 hover:text-white transition">Clear</button>
+    <button id="btn-clear-selection" class="text-slate-500 hover:text-slate-900 transition text-xs font-semibold">Clear</button>
   </div>
 
   <!-- Context Actions Toolbar -->
-  <div class="px-3 py-1.5 bg-gray-900 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400">
+  <div class="px-3.5 py-2 bg-white border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
     <div class="flex items-center space-x-2">
-      <button id="btn-read-active" class="flex items-center space-x-1 bg-gray-800 hover:bg-gray-700 hover:text-white px-2 py-1 rounded border border-gray-700 transition">
-        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <button id="btn-read-active" class="flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium px-2.5 py-1 rounded-lg border border-slate-200 transition shadow-2xs">
+        <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         <span>Read Active File</span>
       </button>
-      <button id="btn-read-sol" class="flex items-center space-x-1 bg-gray-800 hover:bg-gray-700 hover:text-white px-2 py-1 rounded border border-gray-700 transition">
-        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      <button id="btn-read-sol" class="flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium px-2.5 py-1 rounded-lg border border-slate-200 transition shadow-2xs">
+        <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
         <span>Read Solution Structure</span>
       </button>
     </div>
-    <div id="active-context-indicator" class="text-[10px] text-indigo-300 font-mono italic max-w-xs truncate">
+    <div id="active-context-indicator" class="text-[11px] text-indigo-600 font-mono font-medium max-w-xs truncate">
       No additional file context loaded.
     </div>
   </div>
 
   <!-- Input Console -->
-  <div class="p-3 bg-gray-900 border-t border-gray-800">
+  <div class="p-3.5 bg-white border-t border-slate-200">
     <div class="flex space-x-2">
-      <textarea id="prompt-input" rows="1" placeholder="Type a prompt or slash command (e.g., /explain)..." class="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg p-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none h-10 custom-scrollbar"></textarea>
-      <button id="btn-send" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 flex items-center justify-center transition focus:outline-none">
+      <textarea id="prompt-input" rows="1" placeholder="Type a prompt or slash command (e.g., /explain)..." class="flex-1 bg-white text-slate-900 border border-slate-300 rounded-xl p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 resize-none h-10 custom-scrollbar shadow-2xs" style="background-color: #ffffff !important; color: #0f172a !important; -webkit-text-fill-color: #0f172a !important;"></textarea>
+      <button id="btn-send" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-4 flex items-center justify-center transition focus:outline-none shadow-2xs font-semibold">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
       </button>
     </div>
@@ -777,8 +809,8 @@ export function getWebviewHtmlTemplate(config: ExtensionConfig): string {
     // Populate quick slash commands
     COMMANDS.forEach(cmd => {
       const btn = document.createElement('button');
-      btn.className = "text-left text-xs bg-gray-700 hover:bg-gray-600 text-indigo-200 px-2.5 py-1.5 rounded transition font-mono border border-gray-600 hover:border-indigo-500";
-      btn.innerHTML = \`<span class="font-bold text-indigo-400">\${cmd.command}</span> \${cmd.description}\`;
+      btn.className = "text-left text-xs bg-slate-50 hover:bg-indigo-50/70 text-slate-800 px-3 py-2 rounded-xl transition font-mono border border-slate-200 hover:border-indigo-300 shadow-2xs flex justify-between items-center cursor-pointer";
+      btn.innerHTML = \`<div><span class="font-bold text-indigo-600 mr-1.5">\${cmd.command}</span><span class="text-slate-600">\${cmd.description}</span></div>\`;
       btn.addEventListener('click', () => {
         executeCommand(cmd);
       });
@@ -838,7 +870,7 @@ namespace CodeOptimizer
       }
       activeDocumentName = fileName;
       activeDocumentCode = code;
-      contextIndicator.innerHTML = \`<span class="text-green-400 font-semibold flex items-center gap-1">● File: \${fileName} Loaded</span>\`;
+      contextIndicator.innerHTML = \`<span class="text-emerald-600 font-semibold flex items-center gap-1">● File: \${fileName} Loaded</span>\`;
       addMessage('assistant', \`📄 **Captured entire active file context (\${fileName})** into chat memory. You can now prompt me directly about this code block, ask to refactor it, or explain its behavior. I will read and respect the entire document content during generation!\`);
     }
 
@@ -848,7 +880,7 @@ namespace CodeOptimizer
         return;
       }
       solutionStructure = files;
-      contextIndicator.innerHTML = \`<span class="text-indigo-400 font-semibold flex items-center gap-1">● Solution (\${files.length} Files) Loaded</span>\`;
+      contextIndicator.innerHTML = \`<span class="text-indigo-600 font-semibold flex items-center gap-1">● Solution (\${files.length} Files) Loaded</span>\`;
       const formattedList = files.map(f => \`- \` + f).join('\\n');
       addMessage('assistant', \`📂 **Captured entire solution workspace index list!** Available files in Visual Studio Solution:\\n\\n\${formattedList}\\n\\nYou can ask questions like "Explain SortAlgorithms.cs" or ask me to write a new class integrating with these.\`);
     }
@@ -967,13 +999,13 @@ namespace CodeOptimizer
 
       msgDiv.innerHTML = isUser 
         ? \`
-          <div class="bg-indigo-900 text-indigo-50 p-3 rounded-lg max-w-sm text-sm border border-indigo-700 shadow-sm">
+          <div class="bg-indigo-600 text-white p-3.5 rounded-2xl rounded-tr-xs max-w-sm text-sm border border-indigo-700 shadow-2xs leading-relaxed font-normal">
             \${formattedContent}
           </div>
         \`
         : \`
-          <div class="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">AI</div>
-          <div class="bg-gray-800 p-3 rounded-lg max-w-sm text-sm space-y-2 text-gray-200 border border-gray-700 shadow-md">
+          <div class="w-8 h-8 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-2xs">AI</div>
+          <div class="bg-white p-4 rounded-2xl max-w-sm text-sm space-y-2 text-slate-800 border border-slate-200 shadow-2xs leading-relaxed">
             \${formattedContent}
           </div>
         \`;
@@ -988,9 +1020,9 @@ namespace CodeOptimizer
           lastGeneratedCode = codeBlockMatch[1];
           
           // Add inline insert button to the assistant card
-          const lastCard = msgDiv.querySelector('.bg-gray-800');
+          const lastCard = msgDiv.querySelector('.bg-white');
           const insertBtn = document.createElement('button');
-          insertBtn.className = "mt-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-2.5 py-1.5 rounded flex items-center space-x-1 font-semibold transition shadow-sm";
+          insertBtn.className = "mt-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg flex items-center space-x-1.5 font-semibold transition shadow-2xs cursor-pointer";
           insertBtn.innerHTML = '<svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8"/></svg> Insert Code into Editor';
           insertBtn.addEventListener('click', () => {
             if (window.chrome && window.chrome.webview) {
@@ -1003,7 +1035,7 @@ namespace CodeOptimizer
               navigator.clipboard.writeText(lastGeneratedCode);
             }
           });
-          lastCard.appendChild(insertBtn);
+          if (lastCard) lastCard.appendChild(insertBtn);
         }
       }
     }
@@ -1015,60 +1047,77 @@ namespace CodeOptimizer
         return;
       }
 
+      const modelSelectEl = document.getElementById('model-select');
+      const chosenModel = modelSelectEl ? modelSelectEl.value : DEFAULT_MODEL;
+      const fallbackList = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-2.5-pro"];
+      const modelsToTry = Array.from(new Set([chosenModel, ...fallbackList]));
+
       const typingDiv = document.createElement('div');
       typingDiv.className = "flex space-x-3 animate-pulse";
       typingDiv.innerHTML = \`
-        <div class="w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0">AI</div>
-        <div class="bg-gray-800 p-3 rounded-lg max-w-sm text-sm text-gray-400 font-medium">
+        <div class="w-8 h-8 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-2xs">AI</div>
+        <div id="typing-status" class="bg-white p-3.5 rounded-2xl max-w-sm text-sm text-slate-500 font-medium border border-slate-200 shadow-2xs">
           Thinking... Gemini is analyzing your request...
         </div>
       \`;
       chatMessages.appendChild(typingDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
 
-      try {
-        // Direct client-side API call from VS Extension locally to Google AI Studio APIs
-        const url = \`https://generativelanguage.googleapis.com/v1beta/models/\${DEFAULT_MODEL}:generateContent?key=\${currentApiKey}\`;
-        
-        const contents = [
-          {
-            role: "user",
-            parts: [{ text: fullPrompt }]
-          }
-        ];
+      let lastError = null;
 
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            contents,
-            systemInstruction: {
-              parts: [{ text: SYSTEM_PROMPT }]
-            },
-            generationConfig: {
-              temperature: 0.7
+      for (const model of modelsToTry) {
+        try {
+          const statusEl = document.getElementById('typing-status');
+          if (statusEl) statusEl.innerText = \`Thinking... Analyzing request with \${model}...\`;
+
+          const url = \`https://generativelanguage.googleapis.com/v1beta/models/\${model}:generateContent?key=\${currentApiKey}\`;
+          
+          const contents = [
+            {
+              role: "user",
+              parts: [{ text: fullPrompt }]
             }
-          })
-        });
+          ];
 
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error?.message || 'Failed to query Gemini API');
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              contents,
+              systemInstruction: {
+                parts: [{ text: SYSTEM_PROMPT }]
+              },
+              generationConfig: {
+                temperature: 0.7
+              }
+            })
+          });
+
+          if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error?.message || \`HTTP \${response.status}\`);
+          }
+
+          const data = await response.json();
+          const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No output returned.";
+          
+          if (modelSelectEl && modelSelectEl.value !== model) {
+            modelSelectEl.value = model;
+          }
+
+          typingDiv.remove();
+          addMessage('assistant', responseText);
+          return;
+        } catch (err) {
+          lastError = err;
+          console.warn(\`Model \${model} failed:\`, err.message);
         }
-
-        const data = await response.json();
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No output returned.";
-        
-        // Remove typing indicator
-        typingDiv.remove();
-        
-        addMessage('assistant', responseText);
-      } catch (err) {
-        typingDiv.remove();
-        addMessage('assistant', '❌ Error: ' + err.message);
       }
+
+      typingDiv.remove();
+      addMessage('assistant', '❌ API Error: ' + (lastError ? lastError.message : 'Failed to query Gemini API across models'));
     }
 
     // Simplistic markdown-like formatting for demonstration
@@ -1081,14 +1130,14 @@ namespace CodeOptimizer
 
       // Code blocks
       escaped = escaped.replace(/\\\`\\\`\\\`(.*?)\\n([\\s\\S]*?)\\\`\\\`\\\`/g, (match, lang, code) => {
-        return \`<pre class="code-block text-xs p-3 rounded-md overflow-x-auto my-2 text-indigo-100"><code class="language-\${lang}">\${code.trim()}</code></pre>\`;
+        return \`<pre class="code-block text-xs p-3 rounded-lg overflow-x-auto my-2 text-slate-100 shadow-2xs"><code class="language-\${lang}">\${code.trim()}</code></pre>\`;
       });
 
       // Inline code
-      escaped = escaped.replace(/\\\`(.*?)\\\`/g, '<code class="bg-gray-700 px-1 py-0.5 rounded text-indigo-300 font-mono text-xs">$1</code>');
+      escaped = escaped.replace(/\\\`(.*?)\\\`/g, '<code class="bg-slate-100 px-1.5 py-0.5 rounded text-indigo-700 border border-slate-200 font-mono text-xs">$1</code>');
 
       // Strong / Bold
-      escaped = escaped.replace(/\\\*\\\*(.*?)\\\*\\\*/g, '<strong class="font-bold text-white">$1</strong>');
+      escaped = escaped.replace(/\\\*\\\*(.*?)\\\*\\\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
 
       // Paragraph newlines
       escaped = escaped.replace(/\\n/g, '<br>');
