@@ -364,8 +364,25 @@ namespace MyAIStudioExtension
             ThreadHelper.ThrowIfNotOnUIThread();
             dte = ServiceProvider.GlobalProvider.GetService(typeof(DTE)) as DTE2;
 
-            // Initialize WebView2
-            await webView.EnsureCoreWebView2Async(null);
+            // Initialize WebView2 with custom UserDataFolder in LocalAppData to prevent permission errors when running inside Visual Studio (devenv.exe)
+            try
+            {
+                string userDataFolder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "AIStudioChatbot",
+                    "WebView2Data"
+                );
+                Directory.CreateDirectory(userDataFolder);
+
+                var env = await Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateAsync(null, userDataFolder);
+                await webView.EnsureCoreWebView2Async(env);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"WebView2 initialization failed: {ex}");
+                MessageBox.Show($"WebView2 failed to initialize: {ex.Message}\\n\\nPlease ensure Microsoft Edge WebView2 Runtime is installed.", "AI Studio Chatbot Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             // Register event to listen to messages sent from the Webpage JavaScript
             webView.CoreWebView2.WebMessageReceived += WebPage_WebMessageReceived;
@@ -375,11 +392,16 @@ namespace MyAIStudioExtension
             string htmlPath = Path.Combine(assemblyDir, "index.html");
             if (File.Exists(htmlPath))
             {
-                webView.CoreWebView2.Navigate(new Uri(htmlPath).AbsoluteUri);
+                webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                    "aistudio.local",
+                    assemblyDir,
+                    Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Allow
+                );
+                webView.CoreWebView2.Navigate("https://aistudio.local/index.html");
             }
             else
             {
-                webView.CoreWebView2.NavigateToString("<html><body style='color:white;font-family:sans-serif;padding:20px;'><h3>Error: index.html not found</h3><p>Verify that index.html is copied to the Output directory.</p></body></html>");
+                webView.CoreWebView2.NavigateToString("<html><body style='color:white;background:#18181b;font-family:sans-serif;padding:20px;'><h3>Error: index.html not found</h3><p>Verify that index.html is copied to the Output directory.</p></body></html>");
             }
         }
 
