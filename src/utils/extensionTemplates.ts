@@ -76,6 +76,8 @@ export function getCsprojTemplate(config: ExtensionConfig, projectName: string =
     <AssemblyName>${projectName}</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultItems>false</EnableDefaultItems>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <CreateVsixContainer>true</CreateVsixContainer>
