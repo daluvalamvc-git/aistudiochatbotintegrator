@@ -77,6 +77,11 @@ export function getCsprojTemplate(config: ExtensionConfig): string {
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
+    <CreateVsixContainer>true</CreateVsixContainer>
+    <DeployExtension>true</DeployExtension>
+    <DeployVSTemplates>false</DeployVSTemplates>
+    <CopyVsixManifestToOutput>true</CopyVsixManifestToOutput>
+    <TargetVsixContainerName>MyAIStudioExtension.vsix</TargetVsixContainerName>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
@@ -1123,7 +1128,7 @@ This is because your Visual Studio installation is **missing the Extension SDK t
 `;
 }
 
-export function getSlnTemplate(config: ExtensionConfig): string {
+export function getSlnTemplate(config: ExtensionConfig, projectName: string = "MyAIStudioExtension", csprojFileName: string = "MyAIStudioExtension.csproj"): string {
   const isVs2026 = config.vsVersion === "2026";
   const versionHeader = isVs2026 ? "18" : "17";
   const vsVersionStr = isVs2026 ? "18.0.35012.112" : "17.0.31903.59";
@@ -1133,7 +1138,7 @@ export function getSlnTemplate(config: ExtensionConfig): string {
 # Visual Studio Version ${versionHeader}
 VisualStudioVersion = ${vsVersionStr}
 MinimumVisualStudioVersion = ${minVsVersionStr}
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAIStudioExtension", "MyAIStudioExtension.csproj", "{A3D43BBE-1090-41AA-B8B7-EA3CD763A48C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${projectName}", "${csprojFileName}", "{A3D43BBE-1090-41AA-B8B7-EA3CD763A48C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAIStudioBackend", "backend\\MyAIStudioBackend.csproj", "{9A12B852-78E4-428A-851E-4E5C9E11400A}"
 EndProject
@@ -1176,6 +1181,30 @@ export function getBackendCsprojTemplate(): string {
   </ItemGroup>
 
 </Project>`;
+}
+
+export function getBackendSlnTemplate(): string {
+  return `Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35012.112
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAIStudioBackend", "MyAIStudioBackend.csproj", "{9A12B852-78E4-428A-851E-4E5C9E11400A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A12B852-78E4-428A-851E-4E5C9E11400A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A12B852-78E4-428A-851E-4E5C9E11400A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A12B852-78E4-428A-851E-4E5C9E11400A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A12B852-78E4-428A-851E-4E5C9E11400A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal`;
 }
 
 export function getBackendProgramCsTemplate(): string {

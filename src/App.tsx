@@ -120,18 +120,18 @@ export default function App() {
             {/* Step 1 */}
             <div className="bg-gray-950 border border-gray-800 rounded-xl p-5 space-y-3 relative overflow-hidden group hover:border-indigo-500 transition">
               <div className="absolute top-0 right-0 bg-red-950 bg-opacity-50 text-red-400 font-mono text-[9px] px-2 py-0.5 border-l border-b border-red-900 font-semibold">
-                IMPORTANT FIX
+                TROUBLESHOOTING
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-indigo-400 font-mono">STEP 01</span>
                 <Settings className="w-4 h-4 text-gray-600" />
               </div>
-              <h4 className="font-semibold text-sm text-gray-200">Prerequisite SDK Workload</h4>
+              <h4 className="font-semibold text-sm text-gray-200">Extract ZIP &amp; Workloads</h4>
               <p className="text-xs text-gray-400 leading-relaxed">
-                If Visual Studio says the project is <strong>"Unsupported"</strong> or <strong>"Load Failed"</strong>, it means your VS installation is missing the extension tooling!
+                Extract the downloaded ZIP completely before opening. Both <code>MyAIStudioExtension.csproj</code> and <code>aistudiochatbotintegrator.csproj</code> are included so Visual Studio finds all project files without path errors.
               </p>
               <div className="bg-indigo-950 bg-opacity-40 border border-indigo-900 rounded p-2 text-[11px] text-indigo-300">
-                <strong>Fix:</strong> Open <em>Visual Studio Installer</em>, click <strong>Modify</strong>, and check <strong>"Visual Studio extension development"</strong> under Workloads, then click Modify to install.
+                <strong>If "Load Failed":</strong> Open <em>Visual Studio Installer</em>, click <strong>Modify</strong>, and check <strong>"Visual Studio extension development"</strong> under Workloads.
               </div>
             </div>
 
@@ -153,10 +153,13 @@ export default function App() {
                 <span className="text-xs font-bold text-indigo-400 font-mono">STEP 03</span>
                 <Download className="w-4 h-4 text-gray-600" />
               </div>
-              <h4 className="font-semibold text-sm text-gray-200">Permanent Installation</h4>
+              <h4 className="font-semibold text-sm text-gray-200">Where to Find .VSIX Installer</h4>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Once satisfied, change your build target from **Debug** to **Release** and select **Build Solution**. Locate the compiled `.vsix` installer file at `\bin\Release\MyAIStudioExtension.vsix` and run it to install it permanently in your main IDE!
+                When you click <strong>Build Solution</strong> in Visual Studio, MSBuild compiles the C# DLLs and automatically packages the installer at <code>\bin\Debug\MyAIStudioExtension.vsix</code> (or <code>\bin\Release\MyAIStudioExtension.vsix</code>).
               </p>
+              <div className="bg-emerald-950 bg-opacity-40 border border-emerald-900 rounded p-2 text-[11px] text-emerald-300">
+                <strong>VSIX Packaging Enabled:</strong> The <code>&lt;CreateVsixContainer&gt;true&lt;/CreateVsixContainer&gt;</code> property in the <code>.csproj</code> forces MSBuild to output the <code>.vsix</code> installer file into <code>bin\Debug\</code> or <code>bin\Release\</code> during build. Double-click the <code>.vsix</code> file to install it into Visual Studio!
+              </div>
             </div>
           </div>
         </div>

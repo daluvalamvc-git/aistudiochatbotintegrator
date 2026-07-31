@@ -10,7 +10,7 @@ import {
   getPackageTemplate, getChatWindowTemplate, getChatWindowCommandTemplate, 
   getChatWindowControlXamlTemplate, getChatWindowControlCsTemplate, 
   getPropertiesAssemblyInfoTemplate, getWebviewHtmlTemplate, getReadmeTemplate,
-  getSlnTemplate, getBackendCsprojTemplate, getBackendProgramCsTemplate,
+  getSlnTemplate, getBackendCsprojTemplate, getBackendSlnTemplate, getBackendProgramCsTemplate,
   getBackendChatControllerCsTemplate, getBackendHealthControllerCsTemplate,
   getBackendGeminiServiceCsTemplate, getBackendChatModelsCsTemplate,
   getBackendAppSettingsTemplate
@@ -70,9 +70,11 @@ export default function ExtensionConfigurator({ config, onChange }: Props) {
       const zip = new JSZip();
 
       // Folder structure creation
-      zip.file("MyAIStudioExtension.sln", getSlnTemplate(config));
+      zip.file("MyAIStudioExtension.sln", getSlnTemplate(config, "MyAIStudioExtension", "MyAIStudioExtension.csproj"));
+      zip.file("aistudiochatbotintegrator.sln", getSlnTemplate(config, "aistudiochatbotintegrator", "aistudiochatbotintegrator.csproj"));
       zip.file("source.extension.vsixmanifest", getManifestTemplate(config));
       zip.file("MyAIStudioExtension.csproj", getCsprojTemplate(config));
+      zip.file("aistudiochatbotintegrator.csproj", getCsprojTemplate(config));
       zip.file("MyAIStudioExtensionPackage.vsct", getPackageVsctTemplate(config));
       zip.file("MyAIStudioExtensionPackage.cs", getPackageTemplate(config));
       zip.file("ChatWindow.cs", getChatWindowTemplate(config));
@@ -86,6 +88,7 @@ export default function ExtensionConfigurator({ config, onChange }: Props) {
       const backendFolder = zip.folder("backend");
       if (backendFolder) {
         backendFolder.file("MyAIStudioBackend.csproj", getBackendCsprojTemplate());
+        backendFolder.file("MyAIStudioBackend.sln", getBackendSlnTemplate());
         backendFolder.file("Program.cs", getBackendProgramCsTemplate());
         backendFolder.file("appsettings.json", getBackendAppSettingsTemplate(config));
         

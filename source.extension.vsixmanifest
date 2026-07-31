@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="GoogleAIStudio.ChatbotExtension.AIStudioUser" Version="1.0.0" Language="en-US" Publisher="AIStudioUser" />
+    <DisplayName>AI Studio Chatbot Integrator</DisplayName>
+    <Description d:Concat="true">Chatbot tool window for Visual Studio to connect with Google AI Studio and Gemini model APIs.</Description>
+    <Icon>Resources\ExtensionIcon.png</Icon>
+    <PreviewImage>Resources\ExtensionPreview.png</PreviewImage>
+    <Tags>ai, gemini, google, aistudio, chatbot, chat, refactor, code, helper</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 20.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.0, 20.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[17.0, 20.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.7.2,)" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" ProjectName="aistudiochatbotintegrator" Path="|aistudiochatbotintegrator;PkgdefProjectOutputGroup|" />
+  </Assets>
+</PackageManifest>
